@@ -5,7 +5,7 @@ from backend.settings.database import DatabaseSettings
 __all__ = ["get_connection_string", "get_db_session", "get_engine"]
 
 
-def get_connection_string():
+def get_connection_string(manage: bool = False):
     settings = DatabaseSettings()
 
     return "postgresql+asyncpg://%s:%s@%s:%i/%s" % (
@@ -13,11 +13,11 @@ def get_connection_string():
         settings.DATABASE_PASSWORD,
         settings.DATABASE_HOST,
         settings.DATABASE_PORT,
-        settings.DATABASE_NAME,
+        settings.DATABASE_NAME if not manage else "postgres",
     )
 
-def get_engine():
-    return create_async_engine(get_connection_string(), echo=False, future=True,)
+def get_engine(manage: bool = False):
+    return create_async_engine(get_connection_string(manage), echo=False, future=True,)
 
 
 @asynccontextmanager
@@ -47,7 +47,7 @@ async def drop_database():
     
     settings = DatabaseSettings()
 
-    engine = get_engine()
+    engine = get_engine(manage=True)
     async with engine.connect() as conn:
        await conn.execute(text(f"COMMIT;"))
        await conn.execute(text(f"DROP DATABASE {settings.DATABASE_NAME};"))
@@ -59,7 +59,7 @@ async def create_database():
 
     settings = DatabaseSettings()
     
-    engine = get_engine()
+    engine = get_engine(manage=True)
     async with engine.connect() as conn:
        await conn.execute(text(f"COMMIT;"))
        await conn.execute(text(f"CREATE DATABASE {settings.DATABASE_NAME};"))

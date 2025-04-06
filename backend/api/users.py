@@ -1,10 +1,12 @@
 from uuid import UUID
+from typing import Annotated
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi import HTTPException, status
 from pydantic import BaseModel, EmailStr
 from sqlalchemy import select, or_
 
+from backend.api.security import AuthenticatedUser
 from backend.database.functions import get_db_session
 from backend.database.tables import UsersTable
 
@@ -48,8 +50,8 @@ class CreateUserResponseModel(BaseModel):
     username: str
     email: str
 
-@router.get("/", response_model=GetUsersListResponseModel)
-async def get_users():
+@router.get("/all", response_model=GetUsersListResponseModel)
+async def get_users(current_user: Annotated[AuthenticatedUser, Depends()]):
     async with get_db_session() as session:
         result = await session.execute(select(UsersTable))
         users = result.scalars().all()
