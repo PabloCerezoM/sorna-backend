@@ -1,0 +1,120 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sorna"
+description = "Like Sora, with 'Sorna'"
+dynamic = ["version"]
+readme = "README.md"
+requires-python = ">=3.11"
+license = {file="LICENSE"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+authors = [
+    {name = "Pablo Cerezo", email = "pablocerezomarin@gmail.com"},
+]
+
+dependencies = [
+  "click==8.1.8",
+  "pydantic==2.10.6",
+  "pydantic-settings==2.8.0",
+  "httpx==0.28.1",
+  "tenacity==9.0.0",
+  "sqlalchemy[asyncio]==2.0.38",
+  "asyncpg==0.30.0",
+  "alembic==1.15.1",
+  "fastapi==0.115.11",
+  "gunicorn==23.0.0",
+  "uvicorn[standard]==0.34.0",
+  "passlib[bcrypt]",
+  "python-jose[cryptography]",
+  "pydantic[email]",
+
+
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+]
+
+lint = [
+  "black",
+  "pylint",
+  "pyright",
+  "isort",
+  "autoflake",
+  "radon"
+]
+
+dev = [
+    "pre-commit",
+    "sorna[test]",
+    "sorna[lint]",
+]
+
+ci = [
+  "pre-commit",
+  "sorna[test]",
+  "sorna[lint]"
+]
+
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["backend"]
+# namespaces = true
+
+[tool.setuptools.dynamic]
+version = {attr = "backend.__version__"}
+
+[tool.pyright]
+typeCheckingMode = "standard"
+useLibraryCodeForTypes = true
+verboseOutput = false
+ignore = [
+    ".git",
+    "**/__pycache__",
+    "**/\\.*",
+    "node_modules",
+    "build",
+    "data",
+]
+
+[tool.black]
+line-length = 100
+force-exclude = """
+/(
+\\.git
+| build
+| node_modules
+| .*\\.draft.py
+| data
+)/
+"""
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+
+[tool.autoflake]
+ignore-init-module-imports = true
+remove-all-unused-imports = true
+remove-duplicate-keys = true
+in-place = true
+recursive = true
+# exclude = ""
+
+
+
+# ... other project metadata fields as specified in:
+#     https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
