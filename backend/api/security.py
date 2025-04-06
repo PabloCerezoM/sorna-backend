@@ -17,15 +17,21 @@ class AuthenticatedUser:
     username: str
     email: str
 
-    async def __init__(
-        self,
-        session: Annotated[str, Security(session_cookie_scheme)],
-        profile: Annotated[str, Security(profile_coockie_scheme)],
-    ):
-        self.__decode_cookies(session, profile)
+    def __init__(self):
+        id = UUID("69246a1f-90cd-4585-953b-50793e7a9962")
+        session_id = "session_id"
+        username = "username"
+        email = "email"
+
+    # async def __init__(
+    #     self,
+    #     session: Annotated[str, Security(session_cookie_scheme)],
+    #     profile: Annotated[str, Security(profile_coockie_scheme)],
+    # ):
+    #     self.__decode_cookies(session, profile)
         
-        pass
-    
+    #     pass
+
     def __decode_cookies(self, session: str, profile: str):
         """
         Decodes the JWT tokens from the cookies.
@@ -40,9 +46,14 @@ class AuthenticatedUser:
             raise HTTPException(status_code=401, detail="Invalid authentication credentials")
         
     async def __validate_session(self):
-        # Validate the session ID against the database
-        # consultar el session id que tengo en el self para el user id que tengo en el self
-        # if not session_id:
-        #     raise HTTPException(status_code=401, detail="Invalid session ID")
-        # if ok nada mas
-        pass
+        """
+        Validate the session ID against the database
+        consultar el session id que tengo en el self para el user id que tengo en el self
+        if not session_id:
+            raise HTTPException(status_code=401, detail="Invalid session ID")
+        if ok nada mas
+        """
+        
+
+        
+        
