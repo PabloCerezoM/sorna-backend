@@ -26,6 +26,7 @@ async def get_db_session():
     try:
         engine = get_engine()
         async_session = async_sessionmaker(autocommit=False, bind=engine)
+        session = async_session()
 
         async with async_session() as session:
             yield session
