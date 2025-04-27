@@ -9,10 +9,13 @@ DEFAULT_SECRET = blake2b(
 
 class WebSettings(BaseSettings):
     model_config = SettingsConfigDict(
-        # secrets_dir="/vault/secrets/rule_shooter",
         env_file=".env",
         case_sensitive=True,
         extra="ignore",
     )
 
-    WEB_SESSION_SECRET: str = DEFAULT_SECRET
+    WEB_TITLE: str = "Sorna API"
+    WEB_COOKIE_SECRET: str = DEFAULT_SECRET
+    WEB_FQDN: str = "localhost"
+    WEB_COOKIE_EXPIRATION_SECONDS: int = 14400 # 4 hours
+    WEB_COOKIE_EXTEND_TRIGGER_SECONDS: int = 600 # 10 minutes
