@@ -50,7 +50,7 @@ async def drop_database():
     engine = get_engine(manage=True)
     async with engine.connect() as conn:
        await conn.execute(text(f"COMMIT;"))
-       await conn.execute(text(f"DROP DATABASE {settings.DATABASE_NAME};"))
+       await conn.execute(text(f"DROP DATABASE {settings.DATABASE_NAME} WITH (FORCE);"))
 
 
 async def create_database():
