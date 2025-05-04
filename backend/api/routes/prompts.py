@@ -14,7 +14,7 @@ from backend.api.security import SessionMiddleware
 from backend.database.enums.comedians import ComedianStrEnum
 from backend.comedians.base import MetaComedian
 
-router = RouterManager.add_router(APIRouter(prefix="/prompts", tags=["prompts"]))
+router = RouterManager.add_router(APIRouter(prefix="/stories", tags=["stories"]))
 
 class GeneratePromptFormModel(BaseModel):
     """
@@ -35,3 +35,25 @@ async def generate_prompt(
     comedian = MetaComedian.get_comedian(form.comedian)
 
     return comedian.get_context()
+
+class ComedianInfo(BaseModel):
+    name: ComedianStrEnum
+    name_comedian: str
+
+@router.get("/all_comedians", response_model=list[ComedianInfo])
+async def list_comedians(
+    current_user: Annotated[AuthenticatedUser, Depends(get_authenticated_user)],
+):
+    """
+    Return list of available comedians with their display names.
+    """
+    comedians_list = []
+    for enum_key, comedian_cls in MetaComedian.comedians.items():
+        comedians_list.append(
+            ComedianInfo(
+                name=enum_key,
+                name_comedian=comedian_cls.name_comedian,
+            )
+        )
+    return comedians_list
+

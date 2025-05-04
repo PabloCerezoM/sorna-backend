@@ -4,6 +4,7 @@ from .base import BaseComedian
 
 class ChiquitoDeLaCalzada(BaseComedian):
     name = ComedianStrEnum.CHIQUITO_DE_LA_CALZADA
+    name_comedian = "Chiquito de la Calzada"
 
     @staticmethod
     def get_context() -> str:
