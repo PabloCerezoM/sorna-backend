@@ -2,10 +2,12 @@ from uuid import UUID
 from typing import Annotated
 
 import bcrypt
+from openai import OpenAI
 from fastapi import APIRouter, Depends, status, HTTPException
 from pydantic import BaseModel, StringConstraints, Field
 from sqlalchemy import select
 
+from backend.settings.openai import OpenaiSettings
 from backend.database.functions import get_db_session
 from backend.database.tables import UsersTable, SessionsTable
 from backend.api.security import get_authenticated_user, AuthenticatedUser
@@ -33,8 +35,39 @@ async def generate_prompt(
     Generate a prompt.
     """
     comedian = MetaComedian.get_comedian(form.comedian)
+    if not comedian:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Comedian not found",
+        )
+    prompt = form.prompt
+    if not prompt:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Prompt is required",
+        )
+    prompt_to_generate = comedian.get_context() + prompt
+    
+    client = OpenAI(api_key=OpenaiSettings().OPENAI_API_KEY)
+    if not client.api_key:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="OpenAI API key not set",
+        )
+    
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt_to_generate,
+            }
+        ],
+        max_tokens=1024,
+        temperature=0.7,
+    )
 
-    return comedian.get_context()
+    return response.choices[0].message.content
 
 class ComedianInfo(BaseModel):
     name: ComedianStrEnum
