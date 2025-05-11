@@ -20,4 +20,6 @@ class UserPromptsTable(Base):
     prompt: Mapped[str] = mapped_column(nullable=False)
     date_created: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     comedian: Mapped[ComedianStrEnum] = mapped_column(Enum(ComedianStrEnum), nullable=False)
+    title: Mapped[str] = mapped_column(nullable=True)
+    story: Mapped[str] = mapped_column(nullable=True)
     id: Mapped[UUID] = mapped_column(Uuid(), primary_key=True, default_factory=uuid4)

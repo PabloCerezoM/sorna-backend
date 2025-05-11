@@ -31,8 +31,7 @@ dependencies = [
   "passlib[bcrypt]",
   "python-jose[cryptography]",
   "pydantic[email]",
-
-
+  "openai",
 ]
 
 [project.optional-dependencies]

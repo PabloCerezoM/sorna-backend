@@ -29,9 +29,11 @@ class MetaComedian(type):
         if name not in cls.comedians:
             raise ValueError(f"Comedian {name} does not exist. Please check implementation of {name}")
         return cls.comedians[name]
+    
 
 class BaseComedian(metaclass=MetaComedian):
     name: ComedianStrEnum
+    name_comedian: str
 
     @staticmethod
     def get_context() -> str: ...
