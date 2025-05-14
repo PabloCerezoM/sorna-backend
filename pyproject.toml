@@ -8,13 +8,9 @@ description = "Like Sora, with 'Sorna'"
 dynamic = ["version"]
 readme = "README.md"
 requires-python = ">=3.11"
-license = {file="LICENSE"}
-classifiers = [
-    "Programming Language :: Python :: 3",
-]
-authors = [
-    {name = "Pablo Cerezo", email = "pablocerezomarin@gmail.com"},
-]
+license = { file = "LICENSE" }
+classifiers = ["Programming Language :: Python :: 3"]
+authors = [{ name = "Pablo Cerezo", email = "pablocerezomarin@gmail.com" }]
 
 dependencies = [
   "click==8.1.8",
@@ -35,30 +31,22 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = [
-  "pytest",
-]
+test = ["pytest"]
 
-lint = [
+lint = ["black", "pylint", "pyright", "isort", "autoflake", "radon"]
+
+dev = [
+  "pre-commit",
+  "pytest",
   "black",
   "pylint",
   "pyright",
   "isort",
   "autoflake",
-  "radon"
+  "radon",
 ]
 
-dev = [
-    "pre-commit",
-    "sorna[test]",
-    "sorna[lint]",
-]
-
-ci = [
-  "pre-commit",
-  "sorna[test]",
-  "sorna[lint]"
-]
+ci = ["pre-commit", "sorna[test]", "sorna[lint]"]
 
 
 [tool.setuptools.packages.find]
@@ -67,20 +55,13 @@ include = ["backend"]
 # namespaces = true
 
 [tool.setuptools.dynamic]
-version = {attr = "backend.__version__"}
+version = { attr = "backend.__version__" }
 
 [tool.pyright]
 typeCheckingMode = "standard"
 useLibraryCodeForTypes = true
 verboseOutput = false
-ignore = [
-    ".git",
-    "**/__pycache__",
-    "**/\\.*",
-    "node_modules",
-    "build",
-    "data",
-]
+ignore = [".git", "**/__pycache__", "**/\\.*", "node_modules", "build", "data"]
 
 [tool.black]
 line-length = 100
@@ -101,9 +82,7 @@ line_length = 100
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra -q"
-testpaths = [
-    "tests",
-]
+testpaths = ["tests"]
 
 [tool.autoflake]
 ignore-init-module-imports = true
@@ -112,7 +91,6 @@ remove-duplicate-keys = true
 in-place = true
 recursive = true
 # exclude = ""
-
 
 
 # ... other project metadata fields as specified in:
