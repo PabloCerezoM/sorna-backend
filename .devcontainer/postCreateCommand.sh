@@ -1,6 +1,17 @@
+
+
 #!/bin/bash
-sudo -u vscode bash << EOF
-pip install --no-warn-script-location --user -e .[dev]
-git config --unset core.hookspath
+set -e
+
+echo "[postCreateCommand] Installing dev dependencies..."
+pip install --upgrade pip
+pip install -e ".[dev]"
+
+echo "[postCreateCommand] Cleaning up build artifacts..."
+rm -rf *.egg-info build data
+
+echo "[postCreateCommand] Installing pre-commit hooks..."
+git config --unset core.hooksPath || true
 pre-commit install
-rm -Rf *.egg-info build data
+
+echo "[postCreateCommand] Done."
