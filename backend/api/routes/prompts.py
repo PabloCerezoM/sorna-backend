@@ -35,6 +35,8 @@ class GeneratePromptResponseModel(BaseModel):
     """
     title: str
     story: str
+    comedian: ComedianStrEnum
+    date_created: str
 
 @router.post("/generate", response_model=GeneratePromptResponseModel, status_code=status.HTTP_201_CREATED)
 async def generate_prompt(
@@ -97,6 +99,8 @@ async def generate_prompt(
     return GeneratePromptResponseModel(
         title=story_response.get("title", "No title generated"),
         story=story_response.get("story", "No story generated"),
+        comedian=form.comedian,
+        date_created=new_prompt.date_created.isoformat(),
     )
 
 class ComedianInfo(BaseModel):
@@ -120,3 +124,63 @@ async def list_comedians(
         )
     return comedians_list
 
+class GetStoryHistoryModel(BaseModel):
+    """
+    Get stories history model.
+    """
+    id: UUID
+    prompt: str
+    comedian: ComedianStrEnum
+    date_created: str
+    title: str
+    story: str
+
+@router.get("/history", response_model=list[GetStoryHistoryModel])
+async def get_story_history(
+    current_user: Annotated[AuthenticatedUser, Depends(get_authenticated_user)],
+):
+    """
+    Get story history.
+    """
+    async with get_db_session() as session:
+        result = await session.execute(
+            select(UserPromptsTable)
+            .where(UserPromptsTable.user_id == current_user.id)
+            .order_by(UserPromptsTable.date_created.desc())
+        )
+        stories = result.scalars().all()
+        return [
+            GetStoryHistoryModel(
+                id=story.id,
+                prompt=story.prompt,
+                comedian=story.comedian,
+                date_created=story.date_created.isoformat(),
+                title=story.title,
+                story=story.story,
+            )
+            for story in stories
+        ]
+    
+@router.delete("/delete/{story_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_story(
+    story_id: UUID,
+    current_user: Annotated[AuthenticatedUser, Depends(get_authenticated_user)],
+):
+    """
+    Delete a story.
+    """
+    async with get_db_session() as session:
+        result = await session.execute(
+            select(UserPromptsTable)
+            .where(UserPromptsTable.id == story_id, UserPromptsTable.user_id == current_user.id)
+        )
+        story = result.scalars().first()
+        if not story:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Story not found",
+            )
+        await session.delete(story)
+        await session.commit()
+        return {"detail": "Story deleted successfully"}
+    
