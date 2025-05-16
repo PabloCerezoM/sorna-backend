@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from backend.settings.web import WebSettings
 from backend import __version__
@@ -13,6 +14,14 @@ web_settings: WebSettings = WebSettings() #type: ignore
 app = FastAPI(
     title=web_settings.WEB_TITLE,
     version=__version__,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # O pon la URL de tu frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 for router in RouterManager.all().values():
