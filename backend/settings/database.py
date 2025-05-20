@@ -3,7 +3,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class DatabaseSettings(BaseSettings):
     model_config = SettingsConfigDict(
-        # secrets_dir="/vault/secrets/rule_shooter",
         env_file=".env",
         case_sensitive=True,
         extra="ignore",
@@ -14,4 +13,5 @@ class DatabaseSettings(BaseSettings):
     DATABASE_USER: str = "postgres"
     DATABASE_PASSWORD: str = "postgres"
     DATABASE_NAME: str = "backend"
+    DATABASE_MANAGEMENT_NAME: str = "postgres"
     
