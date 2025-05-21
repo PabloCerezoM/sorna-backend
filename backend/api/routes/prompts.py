@@ -71,8 +71,14 @@ async def generate_prompt(
         model="gpt-4o",
         messages=[
             {"role": "system", "content": "Eres un asistente que responde solo en formato JSON válido."},
-            {"role": "user", "content": "Este es un ejemplo de respuesta JSON: {\"story\": \"Aquí el contenido de la historia\", \"title\": \"Título de la historia\"}"},
-            {"role": "user", "content": "Devuelve solo el JSON, sin texto adicional, sin explicaciones y sin bloques de código."},
+            {"role": "user", "content": (
+                "Tu respuesta debe ser un objeto JSON válido con exactamente dos claves: "
+                "\"title\" y \"story\". Ambas claves deben estar presentes SIEMPRE. "
+                "\"title\" debe ser una cadena corta y descriptiva del contenido de la historia. "
+                "\"story\" debe ser una cadena que contenga la historia generada. "
+                "No incluyas ningún texto fuera del objeto JSON. No uses bloques de código. "
+                "Ejemplo de formato: {\"title\": \"El despertar\", \"story\": \"Un día, el sol no salió...\"}"
+            )},
             {"role": "user", "content": prompt_to_generate}
         ],
         max_tokens=1024,
